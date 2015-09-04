@@ -87,13 +87,12 @@ class AdminController extends Controller {
 		return view('admin.login');;
 	}
 
-	public function getUser($user_id){
-
-		$user = User::with('role')
-						->where('id', $user_id )
-						->get();
-		return view('admin.profiluser', compact('user'));
-	}
+	// public function getUser($user_id){
+	//  	$user = User::with('role')
+	//  					->where('id', $user_id )
+	//  					->get();
+	//  	return view('admin.profiluser', compact('user'));
+	// }
 
 
 	/**

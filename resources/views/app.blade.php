@@ -42,6 +42,11 @@
 						<li><a href="{{ url('/auth/login') }}">Se connecter</a></li>
 						<li><a href="{{ url('/auth/register') }}">S'inscrire</a></li>
 					@else
+						<li>
+							@if (Auth::check() && Auth::user()->role->id == 2)
+								<a href="#">{{Auth::user()->role->slug}}</a>
+							@endif
+						</li>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ Auth::user()->name }} <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">

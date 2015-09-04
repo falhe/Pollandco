@@ -24,15 +24,18 @@ Route::post('profil', ['uses' => 'UsersController@update']);
 **/
 Route::group(['prefix' => 'admin', 'namespace' => 'admin'], function() {
 
-    Route::controller('/', 'AdminController');
-    //Route::get('logout', 'AuthController@logout');
+    //Route::resource('/user/{id}/points', 'PointsController');
+    //Route::controller('/', 'AdminController');
+
 
     Route::group(['middleware' => 'admin'], function(){
-        Route::controller('/profiladmin/{id}', 'AdminController');
-        // Route::resource('article', 'ArticleController');
-        // Route::resource('gallery', 'GalleryController');
-        // Route::resource('user', 'UserController');
+        //Route::controller('/profiladmin/{id}', 'AdminController');
+        Route::resource('user', 'UsersController');
+        Route::resource('formulaire', 'FormulaireController');
+        Route::get('gererpoints/{id}', 'GererpointsController@index');
+        //Route::resource('points', 'PointsController');
     });
+    Route::controller('/', 'AdminController');
 });
 
 Route::controllers([
@@ -46,5 +49,5 @@ Route::controllers([
 *
 **/
 Route::get('/searchusers', 'RestController@searchusers');
-
+Route::get('/pointsusers', 'RestController@pointsusers');
 
