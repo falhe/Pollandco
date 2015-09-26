@@ -1,22 +1,18 @@
+{{-- Dashboard administrateur, c'est la page d'accueil d'un admin --}}
+
 @extends('app')
+
+@section('sidebar')
+    @parent
+
+    @include('admin.nav')
+@stop
+
 
 @section('content')
 
-    @if (Auth::user())
-        {{-- expr --}}
-        {{ Auth::user()->name }}
-        {{ Auth::user()->email }}
-    @else
-        <h1>admin pas connecté</h1>
-    @endif
-
-    <div class="row">
-        <div class="col-sm-4 col-md-4">
-            @include('admin.left-menu')
-        </div>
-        <div class="col-sm-8 col-md-8">
-            <div id="search-users-list"></div>
-        </div>
+    <div class="col-lg-9">
+    <p>Bonjour{{ Auth::user()->name }}, tu es dans ton espace <i>admin, où tu peux gérer les panélistes et plein d'autres choses à venir ;)</i></p>
     </div>
 
 @stop

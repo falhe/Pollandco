@@ -42,11 +42,14 @@
 						<li><a href="{{ url('/auth/login') }}">Se connecter</a></li>
 						<li><a href="{{ url('/auth/register') }}">S'inscrire</a></li>
 					@else
-						<li>
-							@if (Auth::check() && Auth::user()->role->id == 2)
+						@if (Auth::check() && Auth::user()->role->id == 2)
+							<li>
+								<a>{{ Auth::user()->email }}</a>
+							</li>
+							<li>
 								<a href="#">{{Auth::user()->role->slug}}</a>
-							@endif
-						</li>
+							</li>
+						@endif
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ Auth::user()->name }} <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
@@ -66,6 +69,11 @@
 		@endif
 
 		@include('flash')
+
+		@section('sidebar')
+            {{-- This is the master sidebar. --}}
+        @show
+
 		@yield('content')
 	</div>
 
@@ -77,14 +85,19 @@
 	</script>
 
 	<!-- Scripts -->
+
+	<script src="{{ asset('/js/bundle.js') }}" ></script>
 	<script type="text/javascript" src="{{ asset('/js/jquery-2.1.4.min.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('/js/bootstrap.min.js') }}"></script>
+
+{{--
+
 	<script type="text/javascript" src="{{ asset('/js/underscore-1.8.3-min.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('/js/backbone-1.2.1-min.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('/js/backbone.mediator.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('/js/handlebars-v3.0.3.js') }}" ></script>
 	<script type="text/javascript" src="{{ asset('/js/moment-2.10.6-min.js') }}"></script>
 
-	<script type="text/javascript" src="{{ asset('/js/app/app.backbone.js') }}" ></script>
+	<script type="text/javascript" src="{{ asset('/js/app/app.backbone.js') }}" ></script> --}}
 </body>
 </html>

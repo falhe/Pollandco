@@ -30,6 +30,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'admin'], function() {
 
     Route::group(['middleware' => 'admin'], function(){
         //Route::controller('/profiladmin/{id}', 'AdminController');
+        Route::get('rechercherusers', 'AdminController@getRechercherusers');
         Route::resource('user', 'UsersController');
         Route::resource('formulaire', 'FormulaireController');
         Route::get('gererpoints/{id}', 'GererpointsController@index');
@@ -48,6 +49,7 @@ Route::controllers([
 * REST
 *
 **/
-Route::get('/searchusers', 'RestController@searchusers');
-Route::get('/pointsusers', 'RestController@pointsusers');
+Route::get('api/searchusers', 'RestController@searchusers');
+Route::put('api/points/substraction/{id}', 'PointsController@substraction');
+Route::resource('api/points', 'PointsController');
 

@@ -26,7 +26,7 @@ Model
 	});
 
 	app.Model.Points = Backbone.Model.extend({
-		url: rootPath + '/admin/points'
+		urlRoot: rootPath + '/api/points'
 	});
 
 	/*=====  End of Backbone Models  ======*/
@@ -38,7 +38,7 @@ Model
 	// Collection de la liste des users recherché
 	app.Collection.User = Backbone.Collection.extend({
 		'model': app.Model.User,
-		'url': rootPath + '/searchusers'
+		'url': rootPath + '/api/searchusers'
 	});
 
 	/*=====  End of Backbone Collections  ======*/
@@ -90,9 +90,7 @@ Model
 	 */
 	app.View.SearchUserResult = Backbone.View.extend({
 
-		tagName: 'table',
-
-		className: 'table item-user-search',
+		tagName: 'tr',
 
 		template: _.template($('#SearchUserResult').html()),
 
@@ -119,9 +117,11 @@ Model
 	 */
 	app.View.SearchUserResults = Backbone.View.extend({
 
-		el: '#search-users-list',
+		el: '#search-users-list table',
 
-		tagName: 'div',
+		tagName: 'table',
+
+		className: 'table table-striped',
 
 		events: {
 			//'submit .form-search-users': 'fetchlaCollection'
@@ -151,58 +151,146 @@ Model
 
 	/**
 	 *
-	 * Vue admin/user/{id}/points
+	 * Vue admin/gererpoints/{id}
 	 * Ajouter/retirer des points
 	 */
 	app.View.HandlerPointsToUser = Backbone.View.extend({
 
-		el: '.container',
+		el: '.gerer-points',
 
 		model: new app.Model.Points(),
 
 		events: {
-			'click #add': 'addPoints'
+			'click a#add': 'addPoints',
+			'click a#remove': 'removePoints'
 		},
 
 		initialize: function() {
-			debugger;
+			console.log('initialize vue HandlerPointsToUser');
 		},
 
 		addPoints: function(e) {
 			e.preventDefault();
+
+			var points = new app.Model.Points();
+			points.set({
+				id: userId,
+				add_points: this.$el.find('#total_points').val()
+			});
+			points.save({
+				wait: true
+			}, {
+				success: function(model, response) {
+					console.log('save success', model, response);
+				},
+				error: function(model, error) {
+					console.log('save error');
+				}
+			});
+		},
+
+		removePoints: function(e) {
+			e.preventDefault();
+			var points = new app.Model.Points();
+			points.save({
+				id: userId,
+				remove_points: this.$el.find('#remove_points').val()
+			}, {
+				wait: true
+			}, {
+				success: function(model, response) {
+					console.log('save success', model, response);
+				},
+				error: function(model, error) {
+					console.log('save error');
+				}
+			});
+		}
+	});
+
+	/*
+	 *	Vue admin/gererpoints/{id}
+	 * tableau des points
+	 */
+	app.View.RecapPoints = Backbone.View.extend({
+		el: '#PointsHandler',
+
+		template: _.template($('#PointsHandlerTemplate').html()),
+
+		events: {
+			'click a#add': 'addPoints',
+			'click a#remove': 'removePoints'
+		},
+
+		initialize: function() {
+			this.listenTo(this.model, 'change', this.render, this);
 			debugger;
-			// var parameters = {
-			// 	name: this.$el.find('.search').val()
-			// };
-			// this.model.fetch({
-			// 	data: {
-			// 		id: parameters.name
-			// 	},
-			// 	success: function(data) {
-			// 		console.log('ok', data);
-			// 		//Backbone.Mediator.publish('SearchUserForm:search', data);
-			// 	},
-			// 	error: function(data) {
-			// 		console.log('error', data);
-			// 	}
-			// });
+			this.model.fetch();
+		},
+
+		render: function() {
+			this.$el.html(this.template(this.model.toJSON()));
+		},
+
+		addPoints: function(e) {
+			e.preventDefault();
+
+			this.model.urlRoot = rootPath + '/api/points';
+			var points = parseInt(this.$el.find('#add_points').val(), 10);
+
+			if (!isNaN(points) && points > 0) {
+				this.model.set({
+					total_points: this.model.get('total_points') + points
+				});
+
+				this.model.save({
+					wait: true
+				}, {
+					success: function(model, response) {
+						console.log(model, 'success save');
+					},
+					error: function(error, response) {
+						console.log(error, response);
+					}
+				});
+			}
+		},
+
+		removePoints: function(e) {
+			e.preventDefault();
+
+			this.model.urlRoot = rootPath + '/api/points/substraction';
+			var points = parseInt(this.$el.find('#remove_points').val(), 10);
+
+			if (!isNaN(points) && points > 0) {
+				this.model.save({
+					remove_points: parseInt(this.$el.find('#remove_points').val(), 10)
+				}, {
+					wait: true
+				}, {
+					success: function(model, response) {
+						console.log('save success', model, response);
+					},
+					error: function(model, error) {
+						console.log('save error');
+					}
+				});
+			}
 		}
 	});
 
 
 	/*=====  End of Backbone Views  ======*/
 
-	/*
-	 *   Instance Vue Search Input for users
-	 */
-	// var SearchUserForm = new app.View.SearchUserForm({
-	//     'model': new Backbone.Model()
-	// });
-
 	var searchUserForm = new app.View.SearchUserForm({
 		collection: new app.Collection.User()
 	});
 	var users = new app.View.SearchUserResults();
 	var HandlerPointsToUser = new app.View.HandlerPointsToUser();
+	var PointsHandlerTemplate = new app.View.RecapPoints({
+		model: new app.Model.Points({
+			id: userId
+		})
+	});
 
 })();

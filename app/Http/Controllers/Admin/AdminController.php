@@ -87,6 +87,16 @@ class AdminController extends Controller {
 		return view('admin.login');;
 	}
 
+	/**
+	 *
+	 * /admin/rechercherusers
+	 *
+	 */
+
+	public function getRechercherusers(){
+		return view('admin.rechercherusers');
+	}
+
 	// public function getUser($user_id){
 	//  	$user = User::with('role')
 	//  					->where('id', $user_id )
